@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 request dps=dividend per share of companies 
 whose ex-dividend date falls on day T where T: 
 can be any day in the range {x1..x5} from every week's wednesday
-Example if today is 28 august, day is a wednesday
+Example if today is 27 august, day is a wednesday
 
 x1=28+10 => 8th of sept
 x2=28+11 => 9th of sept
@@ -28,7 +28,7 @@ def calculateDateRange():
 
 
 # determine if the share is good to buy
-# A share is good if the following conditions are met
+# A share is good if the following conditions are met for me
 def vote(dps, mp):
     if dps>=5 and dps<=7 and mp<=650:
         return True
@@ -71,10 +71,12 @@ def getDividendDetails():
         filteredDividendTypeCalendar = []
         for d in dividendTypeCalendar:
             div_amount = float(d["details"][1:].replace(" per share",""))
+            # I want to tade only those share who are offering dividend>=5
             if div_amount>=5:
                 nseMp = None
                 bseMp = None
                 exchange = ""
+                # check which stock exchange bse or nse is offering lower market price to buy the share
                 if "nseSymbol" in d:
                     nseMp = getMarketPrice(d["nseSymbol"],"NSE")
                 if "bseSymbol" in d:
