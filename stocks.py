@@ -44,10 +44,14 @@ def vote(dps, mp):
 
 # get marketPrice of a shares whose dividend is >=5 rupees
 def getMarketPrice(ticker,stockExchange):
+    url = f'{marketPriceUrl}{ticker}:{stockExchange}'
+    try: 
+        res = requests.get(url,timeout=10)
+    except:
+        return -1
     try:
-        url = f'{marketPriceUrl}{ticker}:{stockExchange}'
         priceClassId = "YMlKec fxKbKc"
-        response = requests.get(url).text
+        response = res.text
         if not response:
             return None
         soup = BeautifulSoup(response,'html.parser')
@@ -64,23 +68,33 @@ def getDividendDetails():
         "from": min_date,
         "to": max_date
     }
-    response = json.loads(requests.get(eventCalendarUrl,params).text)
-    eventCalendar = response["exdateEvents"]
+    eventCalendar = []
+    dividendTypeCalendar = []
+    filteredDividendTypeCalendar = []
+    try: 
+        response = json.loads(requests.get(eventCalendarUrl,params,timeout=10).text)
+        eventCalendar = response["exdateEvents"]
+    except:
+        return "Groww event calendar url not working"
     if(eventCalendar):
         dividendTypeCalendar = list(filter(lambda e: e["type"]=="DIVIDEND",eventCalendar))
-        filteredDividendTypeCalendar = []
+        if not dividendTypeCalendar:
+            return "No dividend type events in the forthcoming week"
         for d in dividendTypeCalendar:
             div_amount = float(d["details"][1:].replace(" per share",""))
             # I want to tade only those share who are offering dividend>=5
             if div_amount>=5:
                 nseMp = None
                 bseMp = None
-                exchange = ""
+                exchange = None
+                mp = None
                 # check which stock exchange bse or nse is offering lower market price to buy the share
                 if "nseSymbol" in d:
                     nseMp = getMarketPrice(d["nseSymbol"],"NSE")
                 if "bseSymbol" in d:
                     bseMp = getMarketPrice(d["bseSymbol"],"BOM")
+                if nseMp == -1 or bseMp == -1:
+                    return "Google finance market price url not working"
                 if nseMp and bseMp:
                     if nseMp<=bseMp:
                         mp = nseMp
@@ -94,18 +108,23 @@ def getDividendDetails():
                 if not bseMp:
                     mp=nseMp
                     exchange = "NSE"
-                if(vote(div_amount, mp)):
-                    item = dict(
-                        Name = d["companyShortName"],
-                        Dividend = div_amount,
-                        ExDate = d["corporateEventPillDto"]["primaryDate"],
-                        MarketPrice = mp,
-                        Exchange = exchange
-                    )
-                    filteredDividendTypeCalendar.append(item)
+                # bse or nse symbol data still there but stock might have got delisted  
+                if(mp):
+                    if(vote(div_amount, mp)):
+                        item = dict(
+                            Name = d["companyShortName"],
+                            Dividend = div_amount,
+                            ExDate = d["corporateEventPillDto"]["primaryDate"],
+                            MarketPrice = mp,
+                            Exchange = exchange
+                        )
+                        filteredDividendTypeCalendar.append(item)
         if filteredDividendTypeCalendar:
-            stocks_str=json.dumps(filteredDividendTypeCalendar,indent=4)
-            return stocks_str
+            return filteredDividendTypeCalendar
+        else:
+            return "No good dividends for you"
+    else:
+        return "No events for the forthcoming event"
 
 
 if __name__=="__main__":
