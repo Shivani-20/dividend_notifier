@@ -6,17 +6,18 @@
 
 * Script request dps=dividend per share of companies 
 whose ex-dividend date falls on day T where T: 
-can be any day in the range {x1..x5} from every week's wednesday
+can be any day in the range {Monday...Friday}
 Example if today is 27 august, day is a wednesday
 
 
-    * x1=28+10 => 8th of sept
-    * x2=28+11 => 9th of sept
-    * x3=28+12 => 10th of sept
-    * x4=28+13 => 11th of sept
-    * x5=28+14 => 12th of sept
+    * x1=27+12 => 8th of sept
+    * x2=27+13 => 9th of sept
+    * x3=27+14 => 10th of sept
+    * x4=27+15 => 11th of sept
+    * x5=27+16 => 12th of sept
 
-    return the dividend list from 8th to 12th september
+        * return the dividend list from 8th to 12th september
+        * Notification is received only on wdnesday and 2 weeks prior to the Ex-date
 
 * The list contains five key points:
     * Name of the stock
