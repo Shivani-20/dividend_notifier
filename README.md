@@ -23,8 +23,8 @@ Example if today is 27 august, day is a wednesday
     * Name of the stock
     * Dividend offered,
     * Ex-dividend Date 
-    * current market price
-    * stock Exchange
+    * Market price
+    * Stock exchange - BSE or NSE
 
 * The api used to fetch dividend data:
     https://groww.in/v1/api/stocks_data/equity_feature/v2/corporate_action/event/
