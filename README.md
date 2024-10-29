@@ -17,7 +17,7 @@ Example if today is 27 august, day is a wednesday
     * x5=27+16 => 12th of sept
 
         * return the dividend list from 8th to 12th september
-        * Notification is received only on wdnesday and 2 weeks prior to the Ex-date
+        * Notification is received only on wednesday and 2 weeks prior to the Ex-date
 
 * The list contains five key points:
     * Name of the stock
@@ -31,4 +31,9 @@ Example if today is 27 august, day is a wednesday
 
 * The api used to fetch market prices:
     https://www.google.com/finance/quote/
+
+
+## Caveats:-
+1. market sentiments must be positive to neutral
+2. Stock must be listed on NSE
 
