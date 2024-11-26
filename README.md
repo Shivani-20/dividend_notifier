@@ -2,7 +2,7 @@
 
 * Using Windows Task Scheduler, my script (notifier.py) executes every wednesday and sends me the list of dividend stocks on my email.
 
-* Conditions for the stock is based on how much premium I can pay with respect to the dividend offered and the market price to trade it in the ex-fividend week.
+* Conditions for the stock is based on how much premium I can pay with respect to the dividend offered and the market price to trade it in the ex-dividend week.
 
 * Script requests dps=dividend per share of companies 
 whose ex-dividend date falls on day T where T: 
